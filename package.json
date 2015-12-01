@@ -1,6 +1,6 @@
 {
   "name": "playlistify",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "spotify playlist app",
   "main": "index.js",
   "scripts": {
@@ -18,8 +18,20 @@
   },
   "homepage": "https://github.com/raineroviir/playlistify",
   "dependencies": {
+    "body-parser": "^1.14.1",
+    "express-session": "^1.12.1",
+    "history": "^1.13.1",
+    "isomorphic-fetch": "^2.2.0",
+    "passport": "^0.3.2",
+    "passport-spotify": "^0.3.0",
     "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "react-dom": "^0.14.3",
+    "react-redux": "^4.0.0",
+    "react-router": "^1.0.0",
+    "redux": "^3.0.4",
+    "redux-logger": "^2.0.4",
+    "redux-thunk": "^1.0.0",
+    "rethinkdb": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^5.5.8",
@@ -28,6 +40,7 @@
     "express": "^4.13.3",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
+    "redux-devtools": "^2.1.5",
     "webpack": "^1.12.9",
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.5.1"
