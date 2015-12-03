@@ -1,6 +1,6 @@
 {
   "name": "playlistify",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "spotify playlist app",
   "main": "index.js",
   "scripts": {
@@ -19,9 +19,11 @@
   "homepage": "https://github.com/raineroviir/playlistify",
   "dependencies": {
     "body-parser": "^1.14.1",
+    "cookies-js": "^1.2.2",
     "express-session": "^1.12.1",
     "history": "^1.13.1",
     "isomorphic-fetch": "^2.2.0",
+    "js-cookie": "^2.0.4",
     "passport": "^0.3.2",
     "passport-spotify": "^0.3.0",
     "react": "^0.14.3",

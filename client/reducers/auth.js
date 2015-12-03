@@ -2,7 +2,7 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   accessToken: null,
-  followings: {},
+  following: [],
   likes: {},
   playlists: [],
   user: null
@@ -14,7 +14,11 @@ export default function auth(state = initialState, action) {
       return {
         ...state, accessToken: action.accessToken
       }
-      
+
+    case types.RECEIVE_FOLLOWING:
+      return {
+        ...state, following: action.artistList
+      }
     default:
       return state;
   }

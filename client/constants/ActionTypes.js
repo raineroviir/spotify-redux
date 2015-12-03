@@ -1,1 +1,3 @@
+//auth.js constants
 export const RECEIVE_ACCESS_TOKEN = 'RECEIVE_ACCESS_TOKEN';
+export const RECEIVE_FOLLOWING = 'RECEIVE_FOLLOWING';

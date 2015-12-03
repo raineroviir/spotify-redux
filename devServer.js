@@ -13,8 +13,8 @@ import session from 'express-session';
 import spotifyConfig from './config/spotify';
 const SpotifyStrategy = passportSpotify.Strategy;
 import fetch from 'isomorphic-fetch';
-
 const port = 3000;
+import cookieParser from 'cookie-parser';
 
 passport.serializeUser(function(user, done) {
   // console.log('serializeUser: ' + user.id)
@@ -76,21 +76,22 @@ passport.use(new SpotifyStrategy({
 },
   function(req, accessToken, refreshToken, profile, done) {
     // if(!req.user) {
-    //
+    //  // Not logged-in. Authenticate based on spotify account.
     // } else {
     //
     // }
+    req.session.accessToken = accessToken;
+    console.log(req.session.accessToken);
     saveUser(profile._json, function(err, user) {
       if (err) { return done(err); }
-      req.session.accessToken = accessToken;
       done(null, profile._json);
     });
   }
 ));
-
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(session({ secret: 'spot'}));
+app.use(session({ secret: 'spot', saveUninitialized: true, resave: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(require('webpack-dev-middleware')(compiler, {
@@ -110,23 +111,14 @@ app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login
   res.redirect('/');
 });
 
-app.get('/', function(req, res) {
-  res.json({user: req.user});
-});
-
 app.get('/api/token', function(req, res) {
-  const token = req.session.accessToken;
-  res(token);
+  res.json(req.session.accessToken);
 });
 
 app.get('/following', function(req, res) {
   const token = req.session.accessToken;
   fetchFollowers();
   res.end();
-});
-
-app.get('/login', function(req, res) {
-  res.json({user: req.user});
 });
 
 function fetchFollowers(token) {

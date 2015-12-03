@@ -5,7 +5,7 @@ import rootReducer from '../reducers';
 import { devTools, persistState } from 'redux-devtools';
 
 const createStoreWithMiddleware = compose(
-  applyMiddleware(thunkMiddleware, createLogger()),
+  applyMiddleware(thunkMiddleware),
   devTools(),
   persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
 )(createStore);
