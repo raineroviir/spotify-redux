@@ -81,7 +81,6 @@ passport.use(new SpotifyStrategy({
     //
     // }
     req.session.accessToken = accessToken;
-    console.log(req.session.accessToken);
     saveUser(profile._json, function(err, user) {
       if (err) { return done(err); }
       done(null, profile._json);
@@ -102,7 +101,7 @@ app.use(require('webpack-hot-middleware')(compiler));
 
 app.use(express.static(path.join(__dirname)));
 
-app.get('/auth/spotify', passport.authenticate('spotify', {scope: ['user-read-email', 'user-read-private', 'playlist-read-private', 'user-follow-read', 'user-library-read', 'user-read-birthdate'], showDialog: true}), function(req, res) {
+app.get('/auth/spotify', passport.authenticate('spotify', {scope: [ 'playlist-read-private', 'playlist-modify-public', 'user-follow-read', 'user-library-read'], showDialog: true}), function(req, res) {
   // The request will be redirected to spotify for authentication, so this
 // function will not be called.
 });
@@ -114,28 +113,6 @@ app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login
 app.get('/api/token', function(req, res) {
   res.json(req.session.accessToken);
 });
-
-app.get('/following', function(req, res) {
-  const token = req.session.accessToken;
-  fetchFollowers();
-  res.end();
-});
-
-function fetchFollowers(token) {
-  return fetch('https://api.spotify.com/v1/me/following?type=artist', {
-    method: 'get',
-    headers: {
-      Authorization: 'Bearer ' + token
-    }
-  })
-  .then(
-    response => {
-      return response.json();
-    }
-  ).then(json => {
-    console.log(json);
-  });
-}
 
 app.listen(port, function(error) {
   if (error) {

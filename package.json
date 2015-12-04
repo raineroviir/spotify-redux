@@ -1,6 +1,6 @@
 {
   "name": "playlistify",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "spotify playlist app",
   "main": "index.js",
   "scripts": {

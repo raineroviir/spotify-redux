@@ -5,7 +5,10 @@ const initialState = {
   following: [],
   likes: {},
   playlists: [],
-  user: null
+  user: null,
+  tracks: [],
+  artists: [],
+  topTracks: []
 }
 
 export default function auth(state = initialState, action) {
@@ -17,7 +20,27 @@ export default function auth(state = initialState, action) {
 
     case types.RECEIVE_FOLLOWING:
       return {
-        ...state, following: action.artistList
+        ...state, following: action.artists
+      }
+
+    case types.RECEIVE_PLAYLISTS:
+      return {
+        ...state, playlists: action.playlists
+      }
+
+    case types.RECEIVE_TRACKS_FROM_PLAYLIST:
+      return {
+        ...state, tracks: action.tracks
+      }
+
+    case types.RECEIVE_ARTISTS_FROM_PLAYLIST:
+      return {
+        ...state, artists: action.artists
+      }
+
+    case types.RECEIVE_ARTISTS_TOP_TRACKS:
+      return {
+        ...state, topTracks: [...state.topTracks, ...action.topTracks]
       }
     default:
       return state;
