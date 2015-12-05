@@ -1,6 +1,24 @@
 import fetch from 'isomorphic-fetch';
 import * as types from '../constants/ActionTypes';
 
+export function getTokenAndPlaylist() {
+  return dispatch => {
+    fetch('./api/token', {
+      method: 'get',
+      credentials: 'include'
+    })
+    .then(response => {
+      return response.json()
+    })
+    .then(json => {
+      const accessToken = json;
+      dispatch(receiveToken(accessToken))
+      dispatch(fetchPlaylists(accessToken))
+    })
+    .catch(error => {throw error});
+  }
+}
+
 export function getToken() {
   return dispatch => {
     fetch('./api/token', {
@@ -16,14 +34,12 @@ export function getToken() {
     .catch(error => {throw error});
   }
 }
-
 function receiveToken(accessToken) {
   return {
     type: types.RECEIVE_ACCESS_TOKEN,
     accessToken
   }
 }
-
 
 export function fetchSavedTracks(token) {
   return dispatch => {
@@ -129,6 +145,7 @@ export function fetchTracksFromPlaylist(href, token) {
     ).then(json => {
       const tracks = json.items;
       dispatch(receiveTracksFromPlaylist(tracks))
+      return tracks;
     })
     .catch(error => {throw error});
   }
@@ -138,6 +155,20 @@ function receiveTracksFromPlaylist(tracks) {
   return {
     type: types.RECEIVE_TRACKS_FROM_PLAYLIST,
     tracks
+  }
+}
+
+
+export function handleClick(href, token) {
+  return dispatch => {
+    return Promise.resolve(dispatch(fetchTracksFromPlaylist(href, token)))
+    .then(tracks => {
+      tracks.forEach(object => {
+        const artist = object.track.artists[0].id;
+        const filter = object.track.id;
+        dispatch(fetchArtistsTopTracks(artist, filter));
+      })
+    })
   }
 }
 

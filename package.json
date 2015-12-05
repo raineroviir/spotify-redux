@@ -1,23 +1,24 @@
 {
   "name": "playlistify",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "spotify playlist app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node devServer.js"
+    "start": "babel-node server/index.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/raineroviir/playlistify.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/raineroviir/playlistify/issues"
   },
   "homepage": "https://github.com/raineroviir/playlistify",
   "dependencies": {
+    "babel": "^5.8.21",
     "body-parser": "^1.14.1",
     "cookies-js": "^1.2.2",
     "express-session": "^1.12.1",
@@ -26,19 +27,24 @@
     "js-cookie": "^2.0.4",
     "passport": "^0.3.2",
     "passport-spotify": "^0.3.0",
+    "qs": "^6.0.1",
     "react": "^0.14.3",
+    "react-bootstrap": "^0.28.1",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.0",
     "redux": "^3.0.4",
     "redux-logger": "^2.0.4",
+    "redux-router": "^1.0.0-beta5",
     "redux-thunk": "^1.0.0",
-    "rethinkdb": "^2.2.0"
+    "rethinkdb": "^2.2.0",
+    "serve-static": "^1.10.0"
   },
   "devDependencies": {
-    "babel-core": "^5.5.8",
+    "babel-core": "^5.8.22",
     "babel-loader": "^5.1.4",
     "babel-plugin-react-transform": "^1.1.1",
+    "babel-runtime": "^5.8.20",
     "express": "^4.13.3",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",

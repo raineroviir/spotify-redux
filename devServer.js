@@ -2,17 +2,107 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import express from 'express';
+
+import React from 'react';
+import { RoutingContext, match } from 'react-router';
+import { Provider } from 'react-redux';
+import {createLocation} from 'history';
+
+import configureStore from './client/store/configureStore';
+import routes from './client/routes';
+import packagejson from './package.json';
+
 const app = express();
+
+const renderFullPage = (html, initialState) => {
+  return `
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Full Stack Web Developer based in London</title>
+        <link rel="stylesheet" type="text/css" href="/static/app.css">
+      </head>
+      <body>
+        <div id="react">${html}</div>
+        <script>
+          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+        </script>
+        <script src="/static/bundle.js"></script>
+      </body>
+    </html>
+  `;
+}
+
+if(process.env.NODE_ENV !== 'production') {
+  const compiler = webpack(webpackConfig);
+  app.use(require('webpack-dev-middleware')(compiler, {
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
+  }));
+  app.use(require('webpack-hot-middleware')(compiler));
+  app.use(express.static(path.join(__dirname)));
+}
+
+function fetchComponentDataBeforeRender(dispatch, components, params) {
+  const needs = components.reduce( (prev, current) => {
+    return (current.need || [])
+      .concat((current.WrappedComponent ? current.WrappedComponent.need : []) || [])
+      .concat(prev);
+    }, []);
+    const promises = needs.map(need => dispatch(need()));
+    return Promise.all(promises);
+}
+
+app.get('/*', function (req, res) {
+  const location = createLocation(req.url);
+
+  match({ routes, location }), (err, redirectLocation, renderProps) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).end('Internal Server Error');
+    }
+
+    if(!renderProps) {
+      return res.status(404).end('Not found');
+    }
+
+    const store = configureStore();
+
+    const InitialView = (
+      <Provider store={store}>
+        <RoutingContext {...renderProps} />
+      </Provider>
+    );
+
+    fetchComponentDataBeforeRender(store.dispatch, renderProps.components, renderProps.params)
+    .then(html => {
+      const componentHTML = React.renderToString(InitialView);
+      const initialState = store.getState();
+      res.status(200).end(renderFullPage(componentHTML, initialState))
+    })
+    .catch(err => {
+      console.log(err)
+      res.end(renderFullPage("",{}))
+    });
+
+  }
+})
+
+const server = app.listen(3002, function() {
+  const host = server.address().address;
+  const port = server.address().port;
+  console.log('example app listening at http://%s:%s', host, port);
+});
+
 import path from 'path';
 import bodyParser from 'body-parser';
 import webpackConfig from './webpack.config.dev';
-const compiler = webpack(webpackConfig);
 import passport from 'passport';
 import passportSpotify from 'passport-spotify';
 import session from 'express-session';
 import spotifyConfig from './config/spotify';
 const SpotifyStrategy = passportSpotify.Strategy;
-import fetch from 'isomorphic-fetch';
 const port = 3000;
 import cookieParser from 'cookie-parser';
 
@@ -93,19 +183,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({ secret: 'spot', saveUninitialized: true, resave: false}));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(require('webpack-dev-middleware')(compiler, {
-  noInfo: true,
-  publicPath: webpackConfig.output.publicPath
-}));
-app.use(require('webpack-hot-middleware')(compiler));
-
-app.use(express.static(path.join(__dirname)));
 
 app.get('/auth/spotify', passport.authenticate('spotify', {scope: [ 'playlist-read-private', 'playlist-modify-public', 'user-follow-read', 'user-library-read'], showDialog: true}), function(req, res) {
   // The request will be redirected to spotify for authentication, so this
 // function will not be called.
 });
-
+//
 app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login'}), function(req, res) {
   res.redirect('/');
 });
