@@ -3,3 +3,4 @@ npm-debug.log
 rethinkdb_data
 log_in-**
 /static/
+Procfile

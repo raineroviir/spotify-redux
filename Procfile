@@ -1,1 +1,1 @@
-web: node server/index
+web: babel-node server/index
