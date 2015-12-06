@@ -3,4 +3,3 @@ npm-debug.log
 rethinkdb_data
 log_in-**
 dist/
-static/
