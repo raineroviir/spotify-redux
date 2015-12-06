@@ -2,12 +2,8 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   accessToken: null,
-  following: [],
-  likes: {},
   playlists: [],
-  user: null,
-  tracks: [],
-  artists: [],
+  username: null,
   topTracks: []
 }
 
@@ -16,6 +12,11 @@ export default function auth(state = initialState, action) {
     case types.RECEIVE_ACCESS_TOKEN:
       return {
         ...state, accessToken: action.accessToken
+      }
+
+    case types.RECEIVE_USERNAME:
+      return {
+        ...state, username: action.username
       }
 
     case types.RECEIVE_FOLLOWING:
@@ -45,4 +46,8 @@ export default function auth(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function checkAuth() {
+  return store.getState()
 }

@@ -1,72 +1,74 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {getToken, fetchFollowing, fetchRelatedArtists, fetchPlaylists, fetchSavedTracks, fetchTracksFromPlaylist, fetchArtistsTopTracks, createPlaylist, getTokenAndPlaylist, handleClick} from '../actions';
-
-
+import {createPlaylist, getTokenAndPlaylistAndTopTracks} from '../actions';
+import { Button, Modal, Input, Table } from 'react-bootstrap';
 class CreatePlaylist extends React.Component {
 
-  componentDidMount() {
-    console.log(this.props);
-    const {dispatch, history} = this.props;
-    const token = this.props.auth.accessToken;
-    if(!token) {
-      dispatch(getTokenAndPlaylist())
-    } else {
-      dispatch(fetchPlaylists(token));
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      PlaylistModal: false,
+      playlistName: ''
     }
   }
-
-  getTheTracksFromPlaylist(href) {
+  componentDidMount() {
     const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    dispatch(fetchTracksFromPlaylist(href, token))
+    dispatch(getTokenAndPlaylistAndTopTracks());
   }
-
-  getTheArtistsTopTracks() {
+  handleSubmit(event) {
+    event.preventDefault();
     const {dispatch} = this.props;
     const token = this.props.auth.accessToken;
-    this.props.auth.tracks.forEach(object => {
-      const artist = object.track.artists[0].id;
-      const filter = object.track.id;
-      dispatch(fetchArtistsTopTracks(artist, filter));
-    })
-  }
-
-  createThePlaylist() {
-    const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    const user = 'raineroviir';
-    const name = 'my awesome Playlist';
+    const username = this.props.auth.username;
+    const playlistName = this.state.playlistName.trim();
     const tracks = this.props.auth.topTracks.map(track => {
       return track.uri;
     })
-    dispatch(createPlaylist(tracks, name, user, token));
+    dispatch(createPlaylist(tracks, playlistName, username, token));
   }
-
-  handleTheClick(href) {
-    const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    dispatch(handleClick(href, token));
+  handleChange(event) {
+    this.setState({playlistName: event.target.value});
   }
-
   render() {
     const savedPlaylists = this.props.auth.playlists;
     const topTracks = this.props.auth.topTracks;
+    const PlaylistTable = (
+      <Table style={{marginTop: '1em', marginBottom: '1em'}} striped bordered condensed hover>
+        <thead>
+          <tr>
+            <th>Song Name</th>
+            <th>Artist</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topTracks.map(track =>
+            <tr key={track.id}>
+              <td key={track.name}>
+                {track.name}
+              </td>
+              <td key={track.artists[0].name}>
+                {track.artists[0].name}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+    );
     return (
       <div>
-        <li><button onClick={this.getTheArtistsTopTracks.bind(this)}>Popular Artists Tracks</button></li>
-        <li><button onClick={this.createThePlaylist.bind(this)}>Create Playlist</button></li>
-        <ul>
-          {savedPlaylists.map(playlist =>
-          <li key={playlist.id}><button onClick={this.handleTheClick.bind(this, playlist.tracks.href)} key={playlist.id}>{playlist.name}: { playlist.tracks.total}</button></li>)}
-        </ul>
-        <ul>
-          {topTracks.map(track =>
-          <li key={track.id}>
-          {track.name}
-          </li>
-          )}
-        </ul>
+        <form onSubmit={this.handleSubmit.bind(this)} >
+          <Input style={{height: '2em', fontSize: '2em'}}
+          type="text"
+          name="playlistName"
+          autoFocus="true"
+          placeholder="Enter the playlist name"
+          value={this.state.playlistName}
+          onChange={this.handleChange.bind(this)}
+          />
+        </form>
+        {topTracks.length > 0 && <Button bsStyle='primary' bsSize='large' onClick={this.handleSubmit.bind(this)}>Save Playlist</Button>}
+        {PlaylistTable}
+        {topTracks.length > 50 && <div style={{display: 'flex', justifyContent: 'center'}}><Button bsStyle='success' bsSize='large' onClick={this.handleSubmit.bind(this)}>Save Playlist</Button></div>}
       </div>
     )
   }

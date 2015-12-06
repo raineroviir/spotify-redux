@@ -2,61 +2,21 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 import { connect } from 'react-redux';
 import {getToken, fetchFollowing, fetchRelatedArtists, fetchPlaylists, fetchSavedTracks, fetchTracksFromPlaylist, fetchArtistsTopTracks, createPlaylist} from '../actions';
+import { Button } from 'react-bootstrap';
 
 class App extends React.Component {
-
-
-  getTheToken() {
-    const {dispatch} = this.props;
-    dispatch(getToken());
-  }
-
-  getTheFollowings() {
-    const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    dispatch(fetchFollowing(token));
-  }
-
-  getTheRelatedArtists(artist) {
-    const {dispatch} = this.props;
-    dispatch(fetchRelatedArtists(artist));
-  }
-
-  getThePlaylists() {
-    const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    dispatch(fetchPlaylists(token));
-  }
-
-  getTheSavedTracks() {
-    const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    dispatch(fetchSavedTracks(token));
-  }
-
-  getTheTracksFromPlaylist(href) {
-    const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    dispatch(fetchTracksFromPlaylist(href, token))
-  }
-
-  getTheArtistsTopTracks() {
-    const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    this.props.auth.tracks.forEach(object => {
-      const artist = object.track.artists[0].id;
-      const filter = object.track.id;
-      dispatch(fetchArtistsTopTracks(artist, filter));
-    })
-  }
-
   render() {
     const {dispatch} = this.props;
     const token = this.props.auth.accessToken;
     const followingArtists = this.props.auth.following;
     return (
       <div>
-        {!token && <li><a href="/auth/spotify"><button>Sign in using Spotify</button></a></li>}
+        {!token && <div style={{fontSize: '2em', display: 'flex', justifyContent: 'center'}}>
+        Welcome to Discover 3x!
+        </div>}
+        {!token && <div style={{fontSize: '2em', display: 'flex', justifyContent: 'center'}}>This app will go through your 'Discover Weekly' Spotify playlist and create a playlist with each artists' top 3 songs.
+        </div>}
+        {!token && <a style={{display: 'flex', justifyContent: 'center'}} href="/auth/spotify"><Button bsSize="large" bsStyle="success" ><i style={{fontSize: '3em', marginRight: '0.5em'}} className="fa fa-spotify"></i><span style={{fontSize: '2em'}}>Create your Playlist!</span></Button></a>}
         {this.props.children}
       </div>
     );

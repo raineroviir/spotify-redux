@@ -1,6 +1,30 @@
 import fetch from 'isomorphic-fetch';
 import * as types from '../constants/ActionTypes';
 
+export function getTokenAndPlaylistAndTopTracks() {
+  return dispatch => {
+    fetch('./api/token', {
+      method: 'get',
+      credentials: 'include'
+    })
+    .then(response => {
+      return response.json()
+    })
+    .then(json => {
+      const accessToken = json.accessToken;
+      const username = json.username;
+      dispatch(receiveToken(accessToken))
+      dispatch(receiveUsername(username))
+      Promise.resolve(dispatch(fetchPlaylists(accessToken)))
+      .then(playlist => {
+        const href = playlist.href;
+        dispatch(fetchArtistAndTopThreeTracksFromArtist(href, accessToken));
+      })
+    })
+    .catch(error => {throw error});
+  }
+}
+
 export function getTokenAndPlaylist() {
   return dispatch => {
     fetch('./api/token', {
@@ -11,9 +35,11 @@ export function getTokenAndPlaylist() {
       return response.json()
     })
     .then(json => {
-      const accessToken = json;
+      const accessToken = json.accessToken;
+      const username = json.username;
       dispatch(receiveToken(accessToken))
-      dispatch(fetchPlaylists(accessToken))
+      dispatch(receiveUsername(username))
+      return dispatch(fetchPlaylists(accessToken))
     })
     .catch(error => {throw error});
   }
@@ -29,7 +55,12 @@ export function getToken() {
       return response.json()
     })
     .then(json => {
-      return dispatch(receiveToken(json))
+      const accessToken = json.accessToken;
+      const username = json.username;
+      dispatch(receiveToken(accessToken))
+      dispatch(receiveUsername(username))
+      console.log(accessToken);
+      return accessToken;
     })
     .catch(error => {throw error});
   }
@@ -41,66 +72,10 @@ function receiveToken(accessToken) {
   }
 }
 
-export function fetchSavedTracks(token) {
-  return dispatch => {
-    return fetch(`https://api.spotify.com/v1/me/tracks?limit=50&offset=0`, {
-      method: 'get',
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    })
-    .then(
-      response => {
-        return response.json();
-      }
-    ).then(json => {
-      console.log(json);
-    })
-    .catch(error => {throw error});
-  }
-}
-
-export function fetchFollowing(token) {
-  return dispatch => {
-    return fetch('https://api.spotify.com/v1/me/following?type=artist&limit=50&offset=0', {
-      method: 'get',
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    })
-    .then(
-      response => {
-        return response.json();
-      }
-    ).then(json => {
-      console.log(json);
-      const artists = json.artists.items; //array of 50 artists. limit of 50 is set by the API
-      dispatch(receiveFollowing(artists))
-    })
-    .catch(error => {throw error});
-  }
-}
-
-function receiveFollowing(artists) {
+function receiveUsername(username) {
   return {
-    type: types.RECEIVE_FOLLOWING,
-    artists
-  }
-}
-
-export function fetchRelatedArtists(artist) {
-  return dispatch => {
-    return fetch(`https://api.spotify.com/v1/artists/${artist}/related-artists`, {
-      method: 'get'
-    })
-    .then(
-      response => {
-        return response.json();
-      }
-    ).then(json => {
-      console.log(json);
-    })
-    .catch(error => {throw error});
+    type: types.RECEIVE_USERNAME,
+    username
   }
 }
 
@@ -117,8 +92,8 @@ export function fetchPlaylists(token) {
         return response.json();
       }
     ).then(json => {
-      const artists = json.items;
-      dispatch(receivePlaylists(artists))
+      const discoverWeekly = json.items.filter(playlist => playlist.name === 'Discover Weekly');
+      return discoverWeekly[0];
     })
     .catch(error => {throw error});
   }
@@ -143,8 +118,7 @@ export function fetchTracksFromPlaylist(href, token) {
         return response.json();
       }
     ).then(json => {
-      const tracks = json.items;
-      dispatch(receiveTracksFromPlaylist(tracks))
+      const tracks = json.tracks.items;
       return tracks;
     })
     .catch(error => {throw error});
@@ -158,6 +132,21 @@ function receiveTracksFromPlaylist(tracks) {
   }
 }
 
+export function fetchArtistAndTopThreeTracksFromArtist(href, token) {
+  console.log(href);
+  console.log(token);
+  return dispatch => {
+    Promise.resolve(dispatch(fetchTracksFromPlaylist(href, token)))
+    .then(tracks => {
+      console.log(tracks);
+      tracks.forEach(object => {
+        const artist = object.track.artists[0].id;
+        const filter = object.track.id;
+        dispatch(fetchArtistsTopTracks(artist, filter));
+      })
+    })
+  }
+}
 
 export function handleClick(href, token) {
   return dispatch => {
@@ -202,15 +191,15 @@ function receiveArtistsTopTracks(topTracks) {
   }
 }
 
-export function createPlaylist(tracks, name, user, token) {
+export function createPlaylist(tracks, playlistName, username, token) {
   return dispatch => {
-    return fetch(`https://api.spotify.com/v1/users/${user}/playlists`, {
+    return fetch(`https://api.spotify.com/v1/users/${username}/playlists`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token
       },
-      body: JSON.stringify({name: name + ' from DiscoverMore'})
+      body: JSON.stringify({name: playlistName + ' created at DiscoverMore'})
     })
     .then(
       response => {
@@ -219,15 +208,15 @@ export function createPlaylist(tracks, name, user, token) {
     ).then(json => {
       console.log(json);
       const playlist = json.id;
-      dispatch(addTracksToPlaylist(tracks, user, playlist, token))
+      dispatch(addTracksToPlaylist(tracks, username, playlist, token))
     })
     .catch(error => {throw error});
   }
 }
 
-function addTracksToPlaylist(tracks, user, playlist, token) {
+function addTracksToPlaylist(tracks, username, playlist, token) {
   return dispatch => {
-    return fetch(`https://api.spotify.com/v1/users/${user}/playlists/${playlist}/tracks`, {
+    return fetch(`https://api.spotify.com/v1/users/${username}/playlists/${playlist}/tracks`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
