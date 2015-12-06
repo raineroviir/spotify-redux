@@ -7,11 +7,11 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 
-import configureStore from '../common/store/configureStore'
-import App from '../common/containers/App'
-import { fetchCounter } from '../common/api/counter'
+import configureStore from './common/store/configureStore'
+import App from './common/containers/App'
+import { fetchCounter } from './common/api/counter'
 import { RoutingContext, match } from 'react-router';
-import routes from '../common/routes';
+import routes from './common/routes';
 import { createLocation } from 'history';
 
 const app = new Express()
@@ -42,7 +42,6 @@ app.use(session({ secret: 'spot', saveUninitialized: true, resave: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 app.get('/auth/spotify', passport.authenticate('spotify', {scope: [ 'playlist-read-private', 'playlist-modify-public'], showDialog: true}), function(req, res) {
   // The request will be redirected to spotify for authentication, so this
 // function will not be called.
@@ -56,8 +55,6 @@ app.get('/callback', passport.authenticate('spotify', {
 app.get('/api/token', function(req, res) {
   res.json({ accessToken: req.session.accessToken, username: req.session.username });
 });
-
-// Use this middleware to set up hot module reloading via webpack.
 
 // This is fired every time the server side receives a request
 app.use(Express.static(path.join(__dirname, 'static')));
