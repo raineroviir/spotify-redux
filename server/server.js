@@ -3,12 +3,10 @@
 import path from 'path'
 import Express from 'express'
 
-if(process.env.NODE_ENV !== 'production') {
-  import webpack from 'webpack'
-  import webpackDevMiddleware from 'webpack-dev-middleware'
-  import webpackHotMiddleware from 'webpack-hot-middleware'
-  import webpackConfig from '../webpack.config.dev'
-}
+import webpack from 'webpack'
+import webpackDevMiddleware from 'webpack-dev-middleware'
+import webpackHotMiddleware from 'webpack-hot-middleware'
+import webpackConfig from '../webpack.config.dev'
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
