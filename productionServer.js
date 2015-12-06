@@ -20,7 +20,7 @@ import bodyParser from 'body-parser';
 
 import passport from 'passport';
 import passportSpotify from 'passport-spotify';
-import spotifyConfig from '../config/spotify';
+import spotifyConfig from './config/spotify';
 const SpotifyStrategy = passportSpotify.Strategy;
 import session from 'express-session';
 passport.use(new SpotifyStrategy({
