@@ -63,10 +63,12 @@ app.get('/api/token', function(req, res) {
 });
 
 // Use this middleware to set up hot module reloading via webpack.
-const compiler = webpack(webpackConfig)
-app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }))
-app.use(webpackHotMiddleware(compiler))
 
+if(process.env.NODE_ENV !== 'production'){
+  const compiler = webpack(webpackConfig)
+  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }))
+  app.use(webpackHotMiddleware(compiler))
+}
 // This is fired every time the server side receives a request
 app.use(Express.static(path.join(__dirname)));
 
@@ -124,6 +126,6 @@ app.listen(process.env.PORT, (error) => {
   if (error) {
     console.error(error)
   } else {
-    console.info(`==> 🌎  Listening on port ${process.env.PORT}. Open up http://localhost:${port}/ in your browser.`)
+    console.info(`==> 🌎  Listening on port ${process.env.PORT}. Open up http://localhost:${process.env.PORT}/ in your browser.`)
   }
 })

@@ -1,5 +1,5 @@
-import path from 'path';
-import webpack from 'webpack';
+var webpack = require("webpack");
+var path = require("path");
 
 module.exports = {
   devtool: 'source-map',
@@ -8,7 +8,7 @@ module.exports = {
     './client/index'
   ],
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, 'static'),
     filename: 'bundle.js',
     publicPath: '/static/'
   },
@@ -24,7 +24,8 @@ module.exports = {
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production')
       }
-    })
+    }),
+		new webpack.optimize.DedupePlugin()
   ],
   module: {
       loaders: [
