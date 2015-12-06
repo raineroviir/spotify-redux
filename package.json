@@ -5,8 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rimraf dist",
-    "start": "npm run clean && npm run build",
+    "start": "npm run build",
     "build": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "dev": "NODE_ENV=development babel-node server/index.js"
   },
@@ -23,6 +22,7 @@
   "dependencies": {
     "babel": "^5.8.21",
     "body-parser": "^1.14.1",
+    "clean-webpack-plugin": "^0.1.4",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "history": "^1.13.1",
