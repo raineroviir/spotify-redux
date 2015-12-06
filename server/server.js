@@ -70,7 +70,7 @@ if(process.env.NODE_ENV !== 'production'){
   app.use(webpackHotMiddleware(compiler))
 }
 // This is fired every time the server side receives a request
-app.use(Express.static(path.join(__dirname)));
+app.use(Express.static(path.join(__dirname, '..', 'static')));
 
 app.get('/*', function(req, res) {
 
@@ -116,7 +116,7 @@ function renderFullPage(html, initialState) {
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
         </script>
-        <script src="/static/bundle.js"></script>
+        <script src="../static/bundle.js"></script>
       </body>
     </html>
   `
