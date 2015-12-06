@@ -6,7 +6,7 @@ import Express from 'express'
 import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
-import webpackConfig from '../webpack.config'
+import webpackConfig from '../webpack.config.dev'
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
@@ -20,8 +20,7 @@ import routes from '../common/routes';
 import { createLocation } from 'history';
 
 const app = new Express()
-const port = 3000
-
+process.env.PORT = process.env.PORT || 3000;
 import bodyParser from 'body-parser';
 
 import passport from 'passport';
@@ -121,10 +120,10 @@ function renderFullPage(html, initialState) {
   `
 }
 
-app.listen(port, (error) => {
+app.listen(process.env.PORT, (error) => {
   if (error) {
     console.error(error)
   } else {
-    console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`)
+    console.info(`==> 🌎  Listening on port ${process.env.PORT}. Open up http://localhost:${port}/ in your browser.`)
   }
 })

@@ -1,22 +1,25 @@
 {
-  "name": "playlistify",
+  "name": "discover3x",
   "version": "0.6.0",
   "description": "spotify playlist app",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node server/index.js"
+    "clean": "rimraf dist",
+    "start": "npm run clean && , npm run build",
+    "build": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "dev": "NODE_ENV=development babel-node server/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/raineroviir/playlistify.git"
+    "url": "https://github.com/raineroviir/discover3x.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/raineroviir/playlistify/issues"
+    "url": "https://github.com/raineroviir/discover3x/issues"
   },
-  "homepage": "https://github.com/raineroviir/playlistify",
+  "homepage": "https://github.com/raineroviir/discover3x",
   "dependencies": {
     "babel": "^5.8.21",
     "body-parser": "^1.14.1",
@@ -44,6 +47,7 @@
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
     "redux-devtools": "^2.1.5",
+    "rimraf": "^2.4.4",
     "webpack": "^1.12.9",
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.5.1"
