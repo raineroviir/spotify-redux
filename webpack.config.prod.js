@@ -1,6 +1,6 @@
 var webpack = require("webpack");
 var path = require("path");
-var relativeAssetsPath = '../static/dist';
+var relativeAssetsPath = './static/dist';
 var assetsPath = path.join(__dirname, relativeAssetsPath);
 var CleanPlugin = require('clean-webpack-plugin');
 
@@ -10,7 +10,7 @@ module.exports = {
     './client/index'
   ],
   output: {
-    path: path.join(__dirname, 'static/dist'),
+    path: path.join(__dirname, './static/dist'),
     filename: 'bundle.js',
     publicPath: '/dist/'
   },

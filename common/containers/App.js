@@ -12,7 +12,7 @@ class App extends React.Component {
     return (
       <div>
         {!token && <div style={{fontSize: '2em', display: 'flex', justifyContent: 'center'}}>
-        Welcome to Spotify 3x!
+        Welcome to spotify3x!
         </div>}
         {!token && <div style={{fontSize: '2em', display: 'flex', justifyContent: 'center'}}>This app will go through your 'Discover Weekly' Spotify playlist and create a playlist with each artists' top 3 songs.
         </div>}
