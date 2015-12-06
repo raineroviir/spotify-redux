@@ -1,5 +1,5 @@
 {
-  "name": "discover3x",
+  "name": "spotify-redux",
   "version": "0.6.0",
   "description": "spotify playlist app",
   "main": "server/index.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/raineroviir/discover3x.git"
+    "url": "https://github.com/raineroviir/spotify-redux.git"
   },
-  "author": "",
+  "author": "Rainer Oviir",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/raineroviir/discover3x/issues"
+    "url": "https://github.com/raineroviir/spotify-redux/issues"
   },
-  "homepage": "https://github.com/raineroviir/discover3x",
+  "homepage": "https://github.com/raineroviir/spotify-redux",
   "dependencies": {
     "babel": "^5.8.21",
     "body-parser": "^1.14.1",
