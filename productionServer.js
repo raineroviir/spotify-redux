@@ -57,7 +57,7 @@ app.get('/api/token', function(req, res) {
 });
 
 // This is fired every time the server side receives a request
-app.use(Express.static(path.join(__dirname, 'static')));
+app.use(Express.static(path.join(__dirname)));
 
 app.get('/*', function(req, res) {
 
