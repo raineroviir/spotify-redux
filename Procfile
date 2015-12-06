@@ -1,1 +1,1 @@
-web: babel-node productionServer
+web: babel-node server/index;

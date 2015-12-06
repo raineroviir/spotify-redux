@@ -10,9 +10,9 @@ module.exports = {
     './client/index'
   ],
   output: {
-    path: path.join(__dirname, './static/dist'),
+    path: path.join(__dirname, 'static'),
     filename: 'bundle.js',
-    publicPath: 'dist/'
+    publicPath: '/static/'
   },
   plugins: [
     new CleanPlugin([relativeAssetsPath]),
@@ -36,7 +36,6 @@ module.exports = {
           test: /\.js$/,
           loader: 'babel',
           exclude: /node_modules/,
-          include: __dirname,
           query: {
             optional: [ 'runtime' ],
             stage: 0,
