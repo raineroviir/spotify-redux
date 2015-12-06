@@ -1,5 +1,7 @@
 var webpack = require("webpack");
 var path = require("path");
+var relativeAssetsPath = '../static/dist';
+var assetsPath = path.join(__dirname, relativeAssetsPath);
 
 module.exports = {
   devtool: 'source-map',
@@ -7,9 +9,9 @@ module.exports = {
     './client/index'
   ],
   output: {
-    path: path.join(__dirname, 'static'),
+    path: assetsPath,
     filename: 'bundle.js',
-    publicPath: '/static/'
+    publicPath: '/dist/'
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
