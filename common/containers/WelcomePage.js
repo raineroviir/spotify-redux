@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 class WelcomePage extends React.Component {
   render() {
     const {screenWidth} = this.props.auth;
-    const mobileStyle = screenWidth < 538 ? {display: 'flex', alignItems: 'center', flexDirection: 'column'} : {display: 'flex', alignItems: 'center', flexDirection: 'column', width: '36em', margin: 'auto'}
+    const mobileStyle = {display: 'flex', alignItems: 'center', flexDirection: 'column'}
     return (
       <container style={mobileStyle}>
         <p style={{fontSize: '2.5em'}}>Welcome to spotify3x!</p>
