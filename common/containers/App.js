@@ -1,22 +1,18 @@
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 import { connect } from 'react-redux';
-import {getToken, fetchFollowing, fetchRelatedArtists, fetchPlaylists, fetchSavedTracks, fetchTracksFromPlaylist, fetchArtistsTopTracks, createPlaylist} from '../actions';
+import {initEnvironment} from '../actions';
 import { Button } from 'react-bootstrap';
 
 class App extends React.Component {
-  render() {
+
+  componentDidMount() {
     const {dispatch} = this.props;
-    const token = this.props.auth.accessToken;
-    const followingArtists = this.props.auth.following;
+    dispatch(initEnvironment());
+  }
+  render() {
     return (
-      <div>
-        {!token && <div style={{fontSize: '2em', display: 'flex', justifyContent: 'center'}}>
-        Welcome to spotify3x!
-        </div>}
-        {!token && <div style={{fontSize: '2em', display: 'flex', justifyContent: 'center'}}>This app will go through your 'Discover Weekly' Spotify playlist and create a playlist with each artists' top 3 songs.
-        </div>}
-        {!token && <a style={{display: 'flex', justifyContent: 'center'}} href="/auth/spotify"><Button bsSize="large" bsStyle="success" ><i style={{fontSize: '3em', marginRight: '0.5em'}} className="fa fa-spotify"></i><span style={{fontSize: '2em'}}>Create your Playlist!</span></Button></a>}
+      <div style={{margin: '1em 1em 2em 1em'}}>
         {this.props.children}
       </div>
     );

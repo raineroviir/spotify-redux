@@ -2,9 +2,15 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   accessToken: null,
+  isFollowingDW: null,
   playlists: [],
   username: null,
-  topTracks: []
+  topTracks: [],
+  newPlaylistID: null,
+  success: null,
+  isMobile: false,
+  screenHeight: null,
+  screenWidth: null
 }
 
 export default function auth(state = initialState, action) {
@@ -43,11 +49,37 @@ export default function auth(state = initialState, action) {
       return {
         ...state, topTracks: [...state.topTracks, ...action.topTracks]
       }
+
+    case types.RECEIVE_SUCCESS:
+      return {
+        ...state, success: action.success
+      }
+
+    case types.RECEIVE_FAILURE:
+      return {
+        ...state, success: action.failure
+      }
+
+    case types.RECEIVE_NEW_PLAYLIST:
+      return {
+        ...state, newPlaylistID: action.newPlaylist.id
+      }
+
+    case types.CHANGE_IS_MOBILE:
+      return {
+        ...state, isMobile: action.isMobile
+      }
+
+    case types.CHANGE_WIDTH_AND_HEIGHT:
+      return {
+        ...state, screenHeight: action.screenHeight, screenWidth: action.screenWidth
+      }
+
+    case types.IS_FOLLOWING_DW:
+      return {
+        ...state, isFollowingDW: action.isFollowingDW
+      }
     default:
       return state;
   }
-}
-
-export function checkAuth() {
-  return store.getState()
 }

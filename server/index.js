@@ -1,2 +1,6 @@
 require('babel/register');
-require('../productionServer');
+if(process.env.NODE_ENV !== 'production') {
+  require('./developmentServer');
+} else {
+  require('../productionServer');
+}

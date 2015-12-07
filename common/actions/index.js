@@ -59,7 +59,6 @@ export function getToken() {
       const username = json.username;
       dispatch(receiveToken(accessToken))
       dispatch(receiveUsername(username))
-      console.log(accessToken);
       return accessToken;
     })
     .catch(error => {throw error});
@@ -79,9 +78,9 @@ function receiveUsername(username) {
   }
 }
 
-export function fetchPlaylists(token) {
+export function fetchPlaylists(token, href = `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`) {
   return dispatch => {
-    return fetch(`https://api.spotify.com/v1/me/playlists?limit=50&offset=0`, {
+    return fetch(href, {
       method: 'get',
       headers: {
         Authorization: 'Bearer ' + token
@@ -92,8 +91,16 @@ export function fetchPlaylists(token) {
         return response.json();
       }
     ).then(json => {
-      const discoverWeekly = json.items.filter(playlist => playlist.name === 'Discover Weekly');
-      return discoverWeekly[0];
+      let discoverWeekly = json.items.filter(playlist => playlist.name === 'Discover Weekly');
+      const href = json.next;
+      if (!href && discoverWeekly.length === 0) {
+        return dispatch(isNotFollowingDW());
+      }
+      if (discoverWeekly.length === 0) {
+        return dispatch(fetchPlaylists(token, href))
+      } else {
+        return discoverWeekly[0];
+      }
     })
     .catch(error => {throw error});
   }
@@ -133,12 +140,9 @@ function receiveTracksFromPlaylist(tracks) {
 }
 
 export function fetchArtistAndTopThreeTracksFromArtist(href, token) {
-  console.log(href);
-  console.log(token);
   return dispatch => {
     Promise.resolve(dispatch(fetchTracksFromPlaylist(href, token)))
     .then(tracks => {
-      console.log(tracks);
       tracks.forEach(object => {
         const artist = object.track.artists[0].id;
         const filter = object.track.id;
@@ -199,15 +203,15 @@ export function createPlaylist(tracks, playlistName, username, token) {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token
       },
-      body: JSON.stringify({name: playlistName + ' created at DiscoverMore'})
+      body: JSON.stringify({name: playlistName + ' from spotify3x.herokuapp.com'})
     })
     .then(
       response => {
         return response.json();
       }
     ).then(json => {
-      console.log(json);
       const playlist = json.id;
+      dispatch(receiveNewPlaylist(json));
       dispatch(addTracksToPlaylist(tracks, username, playlist, token))
     })
     .catch(error => {throw error});
@@ -226,11 +230,77 @@ function addTracksToPlaylist(tracks, username, playlist, token) {
     })
     .then(
       response => {
-        return response.json();
-      }
-    ).then(json => {
-      console.log(json);
-    })
+        if(response.status === 200 || 201) {
+          dispatch(receiveSuccess());
+        } else {
+          dispatch(receiveFailure());
+        }
+      })
     .catch(error => {throw error});
   }
+}
+
+function receiveSuccess() {
+  return {
+    type: types.RECEIVE_SUCCESS,
+    success: true
+  }
+}
+function receiveFailure() {
+  return {
+    type: types.RECEIVE_FAILURE,
+    failure: false
+  }
+}
+function receiveNewPlaylist(newPlaylist) {
+  return {
+    type: types.RECEIVE_NEW_PLAYLIST,
+    newPlaylist
+  }
+}
+
+function isNotFollowingDW() {
+  return {
+    type: types.IS_FOLLOWING_DW,
+    isFollowingDW: false
+  }
+}
+
+export function isSuccess() {
+  return {
+    type: types.RECEIVE_SUCCESS,
+    success: null
+  }
+}
+//the environment code is borrowed from Andrew Ngu, https://github.com/andrewngu/sound-redux
+
+function changeIsMobile(isMobile) {
+  return {
+    type: types.CHANGE_IS_MOBILE,
+    isMobile
+  };
+}
+
+function changeWidthAndHeight(screenHeight, screenWidth) {
+  return {
+    type: types.CHANGE_WIDTH_AND_HEIGHT,
+    screenHeight,
+    screenWidth
+  };
+}
+
+export function initEnvironment() {
+  return dispatch => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    dispatch(changeIsMobile(isMobile));
+    dispatch(changeWidthAndHeight(window.innerHeight, window.innerWidth));
+
+    window.onresize = () => {
+      dispatch(changeWidthAndHeight(window.innerHeight, window.innerWidth));
+    }
+  };
 }

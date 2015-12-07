@@ -9,7 +9,6 @@ import { Provider } from 'react-redux'
 
 import configureStore from './common/store/configureStore'
 import App from './common/containers/App'
-import { fetchCounter } from './common/api/counter'
 import { RoutingContext, match } from 'react-router';
 import routes from './common/routes';
 import { createLocation } from 'history';
@@ -96,7 +95,7 @@ function renderFullPage(html, initialState) {
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
         <meta charset="utf-8">
-        <title>Discover More Music</title>
+        <title>spotify3x</title>
       </head>
       <body>
         <div id="react">${html}</div>

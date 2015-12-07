@@ -14,7 +14,6 @@ import { Provider } from 'react-redux'
 
 import configureStore from '../common/store/configureStore'
 import App from '../common/containers/App'
-import { fetchCounter } from '../common/api/counter'
 import { RoutingContext, match } from 'react-router';
 import routes from '../common/routes';
 import { createLocation } from 'history';
@@ -31,7 +30,7 @@ import session from 'express-session';
 passport.use(new SpotifyStrategy({
   clientID: spotifyConfig.clientID,
   clientSecret: spotifyConfig.clientSecret,
-  callbackURL:  spotifyConfig.redirectURI,
+  callbackURL: 'http://localhost:3000/callback',
   passReqToCallback: true
 },
   function(req, accessToken, refreshToken, profile, done) {
@@ -52,7 +51,8 @@ app.get('/auth/spotify', passport.authenticate('spotify', {scope: [ 'playlist-re
   // The request will be redirected to spotify for authentication, so this
 // function will not be called.
 });
-//
+
+//there is a bug currently with passport where the failureredirect happens when a success should have.
 app.get('/callback', passport.authenticate('spotify', {
   successRedirect: '/playlist',
   failureRedirect: '/playlist'})
@@ -109,7 +109,7 @@ function renderFullPage(html, initialState) {
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
         <meta charset="utf-8">
-        <title>Discover More Music</title>
+        <title>spotify3x</title>
       </head>
       <body>
         <div id="react">${html}</div>
