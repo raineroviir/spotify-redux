@@ -203,7 +203,7 @@ export function createPlaylist(tracks, playlistName, username, token) {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token
       },
-      body: JSON.stringify({name: playlistName + ' from spotify3x.herokuapp.com'})
+      body: JSON.stringify({name: playlistName + ' by spotify3x'})
     })
     .then(
       response => {

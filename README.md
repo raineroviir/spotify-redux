@@ -2,4 +2,8 @@
 spotify playlist app
 ##demo: http://spotify3x.herokuapp.com
 
-documentation and more to come.
+More to come.
+
+##Shoutouts:
+magicplaylist: https://github.com/loverajoel/magicplaylist
+sound-redux: https://github.com/andrewngu/sound-redux

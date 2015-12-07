@@ -65,7 +65,11 @@ class CreatePlaylist extends React.Component {
           <p style={{fontSize: '1.4em'}}>
           Your new playlist {'"' + playlistName + '"'} has been saved!
           </p>
-          <a href={playlistLink} ><Button style={{fontSize: '1.4em'}} bsStyle='success'><i style={{marginRight: '0.5em'}} className="fa fa-spotify"></i>Open the Spotify Web Player and Start Listening!</Button></a>
+          <p>
+          <span style={{marginRight: '0.2em', fontSize: '1.4em'}}>
+          Open your spotify playlists or</span>
+          <a href={playlistLink} ><Button style={{fontSize: '1.4em'}} bsStyle='success'><i style={{marginRight: '0.5em'}} className="fa fa-spotify"></i>Play Online!</Button></a>
+          </p>
           </Modal.Body>
         <Modal.Footer>
           <Button bsStyle='default' onClick={this.closeSuccessModal.bind(this)}>Close</Button>
