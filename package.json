@@ -5,7 +5,7 @@
   "main": "productionServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build",
+    "start": "NODE_ENV=production babel-node server/index.js",
     "build": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "dev": "NODE_ENV=development babel-node server/index.js"
   },
@@ -23,6 +23,7 @@
     "babel": "^5.8.21",
     "body-parser": "^1.14.1",
     "clean-webpack-plugin": "^0.1.4",
+    "cookie-session": "^2.0.0-alpha.1",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "history": "^1.13.1",
@@ -37,10 +38,7 @@
     "redux": "^3.0.4",
     "redux-logger": "^2.0.4",
     "redux-router": "^1.0.0-beta5",
-    "redux-thunk": "^1.0.0",
-    "webpack": "^1.12.9",
-    "webpack-dev-middleware": "^1.4.0",
-    "webpack-hot-middleware": "^2.5.1"
+    "redux-thunk": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^5.8.22",
@@ -50,6 +48,9 @@
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
     "redux-devtools": "^2.1.5",
-    "rimraf": "^2.4.4"
+    "rimraf": "^2.4.4",
+    "webpack": "^1.12.9",
+    "webpack-dev-middleware": "^1.4.0",
+    "webpack-hot-middleware": "^2.5.1"
   }
 }

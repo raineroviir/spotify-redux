@@ -45,6 +45,16 @@ export function getTokenAndPlaylist() {
   }
 }
 
+// export function fetchAuth() {
+//   return dispatch => {
+//     fetch(`https://accounts.spotify.com/en/authorize/
+//       ?show_dialog=true&response_type=code&redirect_uri=${redirect_uri}&scope=${scope}&client_id=${client_id}`)
+//   }
+// }
+
+// export function authCallback() {
+//
+// }
 export function getToken() {
   return dispatch => {
     fetch('./api/token', {
