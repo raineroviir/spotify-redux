@@ -29,7 +29,7 @@ module.exports = {
           test: /\.js$/,
           loader: 'babel',
           exclude: /node_modules/,
-          include: __dirname,
+          include: [path.resolve(__dirname, 'client'), path.resolve(__dirname, 'common')],
           query: {
             optional: [ 'runtime' ],
             stage: 0,

@@ -3,13 +3,8 @@
 import path from 'path'
 import Express from 'express'
 
-import webpack from 'webpack'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import webpackHotMiddleware from 'webpack-hot-middleware'
-import webpackConfig from '../webpack.config.dev'
-
 import React from 'react'
-import { renderToString } from 'react-dom/server'
+import reactDOMServer from 'react-dom/server'
 import { Provider } from 'react-redux'
 
 import configureStore from '../common/store/configureStore'
@@ -26,7 +21,8 @@ import passport from 'passport';
 import passportSpotify from 'passport-spotify';
 import spotifyConfig from '../config/spotify';
 const SpotifyStrategy = passportSpotify.Strategy;
-import session from 'express-session';
+import cookieSession from 'cookie-session';
+
 passport.use(new SpotifyStrategy({
   clientID: spotifyConfig.clientID,
   clientSecret: spotifyConfig.clientSecret,
@@ -34,15 +30,20 @@ passport.use(new SpotifyStrategy({
   passReqToCallback: true
 },
   function(req, accessToken, refreshToken, profile, done) {
+
     req.session.username = profile.username;
     req.session.accessToken = accessToken;
     done(null);
   }
 ));
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(session({ secret: 'spot', saveUninitialized: true, resave: false}));
+app.use(cookieSession({
+  name: 'session',
+  keys: ['accessToken', 'username']
+}))
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -53,10 +54,11 @@ app.get('/auth/spotify', passport.authenticate('spotify', {scope: [ 'playlist-re
 });
 
 //there is a bug currently with passport where the failureredirect happens when a success should have.
-app.get('/callback', passport.authenticate('spotify', {
-  successRedirect: '/playlist',
-  failureRedirect: '/playlist'})
-)
+app.get('/callback', passport.authenticate('spotify',
+{
+  successRedirect: '/',
+  failureRedirect: '/playlist'
+}))
 
 app.get('/api/token', function(req, res) {
   res.json({ accessToken: req.session.accessToken, username: req.session.username });
@@ -64,7 +66,11 @@ app.get('/api/token', function(req, res) {
 
 // Use this middleware to set up hot module reloading via webpack.
 
-if(process.env.NODE_ENV !== 'production'){
+if(process.env.NODE_ENV !== 'production') {
+  const webpack = require('webpack')
+  const webpackDevMiddleware = require('webpack-dev-middleware')
+  const webpackHotMiddleware = require('webpack-hot-middleware')
+  const webpackConfig = require('../webpack.config.dev')
   const compiler = webpack(webpackConfig)
   app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }))
   app.use(webpackHotMiddleware(compiler))
@@ -96,7 +102,7 @@ app.get('/*', function(req, res) {
     );
 
     const initialState = store.getState();
-    const html = React.renderToString(InitialView);
+    const html = reactDOMServer.renderToString(InitialView);
     res.status(200).end(renderFullPage(html, initialState));
   })
 })
