@@ -11,6 +11,14 @@ class App extends React.Component {
     dispatch(initEnvironment());
   }
   render() {
+    const {height, isMobile, width} = this.props;
+    if (isMobile) {
+      return (
+        <div style={{height: `${height}px`, width: `${width}px`}}>
+          {this.props.children}
+        </div>
+      );
+    }
     return (
       <div style={{margin: '1em 1em 2em 1em'}}>
         {this.props.children}
