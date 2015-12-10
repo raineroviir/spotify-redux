@@ -37,7 +37,6 @@ passport.use(new SpotifyStrategy({
   }
 ));
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
@@ -47,7 +46,6 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 app.get('/auth/spotify', passport.authenticate('spotify', {scope: [ 'playlist-read-private', 'playlist-modify-public'], showDialog: true}), function(req, res) {
   // The request will be redirected to spotify for authentication, so this
 // function will not be called.
@@ -56,7 +54,7 @@ app.get('/auth/spotify', passport.authenticate('spotify', {scope: [ 'playlist-re
 //there is a bug currently with passport where the failureredirect happens when a success should have.
 app.get('/callback', passport.authenticate('spotify',
 {
-  successRedirect: '/',
+  successRedirect: '/playlist',
   failureRedirect: '/playlist'
 }))
 

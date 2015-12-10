@@ -83,3 +83,7 @@ export default function auth(state = initialState, action) {
       return state;
   }
 }
+
+export function isAuthLoaded(globalState) {
+  return globalState.auth.accessToken && globalState.auth.username;
+}
