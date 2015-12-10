@@ -26,7 +26,7 @@ import cookieSession from 'cookie-session';
 passport.use(new SpotifyStrategy({
   clientID: spotifyConfig.clientID,
   clientSecret: spotifyConfig.clientSecret,
-  callbackURL: process.env.NODE_ENV !== 'production' ? 'localhost:3000/callback' : spotifyConfig.redirectURI,
+  callbackURL: process.env.NODE_ENV !== 'production' ? 'http://localhost:3000/callback' : spotifyConfig.redirectURI,
   passReqToCallback: true
 },
   function(req, accessToken, refreshToken, profile, done) {
